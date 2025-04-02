@@ -7,13 +7,24 @@ class BasePage:
 
     def click_element(self, locator):
         WebDriverWait(self.browser, 10).until(
-            EC.element_to_be_clickable(locator)
+        EC.element_to_be_clickable(locator)
         ).click()
+
 
     def is_element_visible(self, locator):
         return WebDriverWait(self.browser, 10).until(
             EC.visibility_of_element_located(locator)
         )
+
+    def is_element_clickable(self, locator, timeout=10):
+        try:
+            WebDriverWait(self.browser, timeout).until(
+                EC.element_to_be_clickable(locator)
+            )
+            return True
+        except:
+            return False
+
 
     def get_element_text(self, locator):
         element = self.is_element_visible(locator)

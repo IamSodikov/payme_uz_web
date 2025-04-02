@@ -1,8 +1,22 @@
 from pages.base_page import BasePage
-from locators.locators import LanguageLocators
+from locators.locators import LanguageLocators, InfoCompanyLocators
 from config.config import Urls
 
-class MainPage(BasePage):
+
+class InfoCompany(BasePage):
+    def open(self):
+        self.browser.get(Urls.BASE_URL)
+    
+    def open_info(self):
+        self.click_element(InfoCompanyLocators.ABOUT_US_BTN)
+
+    def check_btns_visible(self, btns):
+        return [self.is_element_visible(btn) for btn in btns]
+
+    def check_btns_clickable(self, btns):
+        return [self.is_element_clickable(btn) for btn in btns]
+
+class LanguageSwitch(BasePage):
     def open(self):
         self.browser.get(Urls.BASE_URL)
     
