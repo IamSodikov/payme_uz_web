@@ -24,7 +24,10 @@ class BasePage:
             return True
         except:
             return False
-
+    def wait_for_url_contains(self, url_fragment, timeout=10):
+        WebDriverWait(self.browser, timeout).until(
+            EC.url_contains(url_fragment)
+        )
 
     def get_element_text(self, locator):
         element = self.is_element_visible(locator)

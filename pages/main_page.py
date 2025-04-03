@@ -1,5 +1,5 @@
 from pages.base_page import BasePage
-from locators.locators import LanguageLocators, InfoCompanyLocators
+from locators.locators import LanguageLocators, InfoCompanyLocators, PayBtnLocators
 from config.config import Urls
 
 
@@ -15,6 +15,13 @@ class InfoCompany(BasePage):
 
     def check_btns_clickable(self, btns):
         return [self.is_element_clickable(btn) for btn in btns]
+
+class PayBtn(BasePage):
+    def open(self):
+        self.browser.get(Urls.BASE_URL)
+    
+    def open_info(self):
+        self.click_element(PayBtnLocators.PAY_BTN)
 
 class LanguageSwitch(BasePage):
     def open(self):
