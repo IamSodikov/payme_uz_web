@@ -1,9 +1,12 @@
 import pytest
 from selenium import webdriver
+import os
 
 @pytest.fixture
 def browser():
-    driver = webdriver.Chrome()
+    remote_url = os.getenv("SELENIUM_REMOTE_URL", "http://localhost:4444/wd/hub")
+    options = webdriver.ChromeOptions()
+    driver = webdriver.Remote(command_executor=remote_url, options=options)
     driver.maximize_window()
     yield driver
     driver.quit()
