@@ -1,15 +1,25 @@
+import os  # <--- Qo'shildi
 import pytest
 from selenium import webdriver
-import os
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager  # Avtomatik ChromeDriver
 
-@pytest.fixture
-def browser():
-    remote_url = os.getenv("SELENIUM_REMOTE_URL", "http://localhost:4444/wd/hub")
+@pytest.fixture(scope="class")
+def browser(request):
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
-    driver = webdriver.Remote(command_executor=remote_url, options=options)
-    driver.maximize_window()
+    # Headless rejimni tekshirish (default: true)
+    if os.getenv("HEADLESS", "true").lower() == "true":
+        options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1920,1080")  # Ekran o'lchami
+
+    # ChromeDriver avtomatik o'rnatish
+    driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()),
+        options=options
+    )
+    driver.implicitly_wait(10)
+    request.cls.driver = driver
     yield driver
     driver.quit()

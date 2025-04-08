@@ -1,34 +1,41 @@
-name: Selenium UI Tests
+name: Payme.uz Selenium CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      selenium:
-        image: selenium/standalone-chrome
-        ports:
-          - 4444:4444
-
     steps:
-    - name: Kodni yuklash
-      uses: actions/checkout@v3
+    - name: Repositoryni yuklash
+      uses: actions/checkout@v4
 
-    - name: Pythonni o‘rnatish
+    - name: Python 3.11 ni o'rnatish
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    - name: Kutubxonalarni o‘rnatish
-      run: pip install -r requirements.txt
+    - name: Kerakli kutubxonalarni o'rnatish
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt
 
-    - name: UI testlarni ishga tushirish
+    - name: Testlarni ishga tushirish
       env:
-        SELENIUM_REMOTE_URL: http://localhost:4444/wd/hub
-      run: pytest tests/ --tb=short -v
+        BASE_URL: ${{ secrets.BASE_URL }}  # GitHub Secrets dan olinadi
+        HEADLESS: "true"  # CI da har doim headless
+      run: |
+        pytest tests/test_main_page/ \  # Testlar joylashgan papka
+          --html=report.html \
+          --self-contained-html \
+          --base-url=${BASE_URL}
+
+    - name: Test hisobotini saqlash
+      uses: actions/upload-artifact@v4
+      with:
+        name: selenium-report
+        path: report.html
